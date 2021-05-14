@@ -21,9 +21,10 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.assignment.SetAssignmentSegment;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.column.OnDuplicateKeyColumnsSegment;
-import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.WithSegment;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.OutputSegment;
+import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.WithSegment;
 import org.apache.shardingsphere.sql.parser.sql.common.statement.dml.InsertStatement;
+import org.apache.shardingsphere.sql.parser.sql.dialect.handler.SQLStatementHandler;
 import org.apache.shardingsphere.sql.parser.sql.dialect.statement.mysql.MySQLStatement;
 import org.apache.shardingsphere.sql.parser.sql.dialect.statement.mysql.dml.MySQLInsertStatement;
 import org.apache.shardingsphere.sql.parser.sql.dialect.statement.postgresql.PostgreSQLStatement;
@@ -34,16 +35,16 @@ import org.apache.shardingsphere.sql.parser.sql.dialect.statement.sqlserver.dml.
 import java.util.Optional;
 
 /**
- * InsertStatement handler for different dialect SQLStatements.
+ * Insert statement handler for different dialect SQL statements.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class InsertStatementHandler {
+public final class InsertStatementHandler implements SQLStatementHandler {
     
     /**
-     * Get OnDuplicateKeyColumnsSegment.
+     * Get On duplicate key columns segment.
      *
-     * @param insertStatement InsertStatement
-     * @return OnDuplicateKeyColumnsSegment
+     * @param insertStatement insert statement
+     * @return on duplicate key columns segment
      */
     public static Optional<OnDuplicateKeyColumnsSegment> getOnDuplicateKeyColumnsSegment(final InsertStatement insertStatement) {
         if (insertStatement instanceof MySQLStatement) {
@@ -53,10 +54,10 @@ public final class InsertStatementHandler {
     }
     
     /**
-     * Get SetAssignmentSegment.
+     * Get set assignment segment.
      *
-     * @param insertStatement InsertStatement
-     * @return SetAssignmentSegment
+     * @param insertStatement insert statement
+     * @return set assignment segment
      */
     public static Optional<SetAssignmentSegment> getSetAssignmentSegment(final InsertStatement insertStatement) {
         if (insertStatement instanceof MySQLStatement) {
@@ -66,10 +67,10 @@ public final class InsertStatementHandler {
     }
     
     /**
-     * Get WithSegment.
+     * Get with segment.
      *
-     * @param insertStatement InsertStatement
-     * @return WithSegment
+     * @param insertStatement insert statement
+     * @return with segment
      */
     public static Optional<WithSegment> getWithSegment(final InsertStatement insertStatement) {
         if (insertStatement instanceof PostgreSQLStatement) {
@@ -82,10 +83,10 @@ public final class InsertStatementHandler {
     }
     
     /**
-     * Get OutputSegment.
+     * Get output segment.
      * 
-     * @param insertStatement InsertStatement
-     * @return OutputSegment
+     * @param insertStatement insert statement
+     * @return output segment
      */
     public static Optional<OutputSegment> getOutputSegment(final InsertStatement insertStatement) {
         if (insertStatement instanceof SQLServerStatement) {

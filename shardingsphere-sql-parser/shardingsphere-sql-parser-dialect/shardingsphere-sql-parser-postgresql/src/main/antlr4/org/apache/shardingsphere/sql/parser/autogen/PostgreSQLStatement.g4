@@ -52,17 +52,24 @@ execute
     | alterDatabase
     | alterProcedure
     | alterServer
+    | alterSequence
     | createDatabase
     | createFunction
     | createProcedure
     | createServer
     | createTrigger
     | createView
+    | createSequence
     | dropDatabase
     | dropFunction
     | dropProcedure
     | dropServer
     | dropTrigger
     | dropView
+    | dropSequence
+    | vacuum
+    | prepare
+    | executeStmt
+    | deallocate
     ) SEMI_?
     ;

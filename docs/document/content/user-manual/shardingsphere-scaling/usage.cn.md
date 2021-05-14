@@ -1,5 +1,5 @@
 +++
-pre = "<b>4.5.2. </b>"
+pre = "<b>4.4.2. </b>"
 title = "使用手册"
 weight = 2
 +++
@@ -53,15 +53,22 @@ PostgreSQL 需要开启 [test_decoding](https://www.postgresql.org/docs/9.4/test
 
 请求体：
 
-| 参数                                               | 描述                                                     |
+| 参数                                               | 描述                                                         |
 | ------------------------------------------------- | ------------------------------------------------------------ |
-| ruleConfiguration.sourceDataSource                | 源端sharding sphere数据源相关配置                             |
-| ruleConfiguration.sourceRule                      | 源端sharding sphere表规则相关配置                             |
-| ruleConfiguration.targetDataSources.name          | 目标端sharding proxy名称                                     |
-| ruleConfiguration.targetDataSources.url           | 目标端sharding proxy jdbc url                                |
-| ruleConfiguration.targetDataSources.username      | 目标端sharding proxy用户名                                   |
-| ruleConfiguration.targetDataSources.password      | 目标端sharding proxy密码                                     |
+| ruleConfig.source                                 | 源端数据源相关配置                                             |
+| ruleConfig.target                                 | 目标端数据源相关配置                                           |
 | jobConfiguration.concurrency                      | 迁移并发度，举例：如果设置为3，则待迁移的表将会有三个线程同时对该表进行迁移，前提是该表有整数型主键 |
+
+数据源配置：
+
+| 参数                                               | 描述                                                         |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| type                                              | 数据源类型（可选参数：shardingSphereJdbc、jdbc）                |
+| parameter                                         | 数据源参数                                                    |
+
+*** 注意 ***
+
+当前 source type 必须是 shardingSphereJdbc
 
 示例：
 
@@ -70,53 +77,53 @@ curl -X POST \
   http://localhost:8888/scaling/job/start \
   -H 'content-type: application/json' \
   -d '{
-        "ruleConfiguration": {
-          "sourceDataSource":"
-            dataSources:
-              ds_0:
-                dataSourceClassName: com.zaxxer.hikari.HikariDataSource
-                props:
-                  driverClassName: com.mysql.jdbc.Driver
-                  jdbcUrl: jdbc:mysql://127.0.0.1:3306/scaling_0?useSSL=false
-                  username: scaling
-                  password: scaling
-              ds_1:
-                dataSourceClassName: com.zaxxer.hikari.HikariDataSource
-                props:
-                  driverClassName: com.mysql.jdbc.Driver
-                  jdbcUrl: jdbc:mysql://127.0.0.1:3306/scaling_1?useSSL=false
-                  username: scaling
-                  password: scaling
-            ",
-          "sourceRule":"
-            rules:
-            - !SHARDING
-              tables:
-                t_order:
-                  actualDataNodes: ds_$->{0..1}.t_order_$->{0..1}
-                  databaseStrategy:
-                    standard:
-                      shardingColumn: order_id
-                      shardingAlgorithmName: t_order_db_algorith
-                  logicTable: t_order
-                  tableStrategy:
-                    standard:
-                      shardingColumn: user_id
-                      shardingAlgorithmName: t_order_tbl_algorith
-              shardingAlgorithms:
-                t_order_db_algorith:
-                  type: INLINE
-                  props:
-                    algorithm-expression: ds_$->{order_id % 2}
-                t_order_tbl_algorith:
-                  type: INLINE
-                  props:
-                    algorithm-expression: t_order_$->{user_id % 2}
-            ",
-          "targetDataSources":{
-            "username":"root",
-            "password":"root",
-            "url":"jdbc:mysql://127.0.0.1:3307/sharding_db?serverTimezone=UTC&useSSL=false"
+        "ruleConfig": {
+          "source": {
+            "type": "shardingSphereJdbc",
+            "parameter": "
+                dataSources:
+                  ds_0:
+                    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+                    jdbcUrl: jdbc:mysql://127.0.0.1:3306/scaling_0?useSSL=false
+                    username: scaling
+                    password: scaling
+                  ds_1:
+                    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+                    jdbcUrl: jdbc:mysql://127.0.0.1:3306/scaling_1?useSSL=false
+                    username: scaling
+                    password: scaling
+                rules:
+                - !SHARDING
+                  tables:
+                    t_order:
+                      actualDataNodes: ds_$->{0..1}.t_order_$->{0..1}
+                      databaseStrategy:
+                        standard:
+                          shardingColumn: order_id
+                          shardingAlgorithmName: t_order_db_algorith
+                      logicTable: t_order
+                      tableStrategy:
+                        standard:
+                          shardingColumn: user_id
+                          shardingAlgorithmName: t_order_tbl_algorith
+                  shardingAlgorithms:
+                    t_order_db_algorith:
+                      type: INLINE
+                      props:
+                        algorithm-expression: ds_$->{order_id % 2}
+                    t_order_tbl_algorith:
+                      type: INLINE
+                      props:
+                        algorithm-expression: t_order_$->{user_id % 2}
+                "
+          },
+          "target": {
+              "type": "jdbc",
+              "parameter": "
+                username: root
+                password: root
+                jdbcUrl: jdbc:mysql://127.0.0.1:3307/sharding_db?serverTimezone=UTC&useSSL=false
+                "
           }
         },
         "jobConfiguration":{
@@ -227,7 +234,7 @@ curl -X GET \
 
 #### 停止迁移任务
 
-接口描述：POST /scaling/job/stop
+接口描述：GET /scaling/job/stop
 
 请求体：
 
@@ -237,12 +244,8 @@ curl -X GET \
 
 示例：
 ```
-curl -X POST \
-  http://localhost:8888/scaling/job/stop \
-  -H 'content-type: application/json' \
-  -d '{
-   "jobId":1
-}'
+curl -X GET \
+  http://localhost:8888/scaling/job/stop/1
 ```
 返回信息：
 ```

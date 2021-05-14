@@ -17,11 +17,19 @@
 
 package org.apache.shardingsphere.sql.parser.sql.dialect.statement.sqlserver.ddl;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.shardingsphere.sql.parser.sql.common.statement.ddl.DropTableStatement;
 import org.apache.shardingsphere.sql.parser.sql.dialect.statement.sqlserver.SQLServerStatement;
 
 /**
  * SQLServer drop table statement.
  */
+@Getter
+@Setter
+@ToString
 public final class SQLServerDropTableStatement extends DropTableStatement implements SQLServerStatement {
+    
+    private boolean containsIfExistClause;
 }

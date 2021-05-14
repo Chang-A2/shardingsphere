@@ -19,16 +19,15 @@ package org.apache.shardingsphere.db.protocol.postgresql.packet.command.query.bi
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.db.protocol.postgresql.constant.PostgreSQLColumnType;
+import org.apache.shardingsphere.db.protocol.postgresql.constant.PostgreSQLBinaryColumnType;
 
 /**
  * Bind parameter type for PostgreSQL.
  */
 @RequiredArgsConstructor
 @Getter
+// TODO merge this class and PostgreSQLBinaryColumnType, remove PostgreSQLBinaryStatementParameterType
 public final class PostgreSQLBinaryStatementParameterType {
     
-    private final PostgreSQLColumnType columnType;
-    
-    private final int format = 1;
+    private final PostgreSQLBinaryColumnType columnType;
 }

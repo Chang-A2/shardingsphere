@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.sql.parser.sql.dialect.statement.mysql.dml;
 
-import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.order.OrderBySegment;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.pagination.limit.LimitSegment;
 import org.apache.shardingsphere.sql.parser.sql.common.statement.dml.UpdateStatement;
@@ -29,14 +29,14 @@ import java.util.Optional;
 /**
  * MySQL update statement.
  */
-@Getter
 @Setter
+@ToString
 public final class MySQLUpdateStatement extends UpdateStatement implements MySQLStatement {
     
     private OrderBySegment orderBy;
-
+    
     private LimitSegment limit;
-
+    
     /**
      * Get order by segment.
      *
@@ -45,7 +45,7 @@ public final class MySQLUpdateStatement extends UpdateStatement implements MySQL
     public Optional<OrderBySegment> getOrderBy() {
         return Optional.ofNullable(orderBy);
     }
-
+    
     /**
      * Get order by segment.
      *

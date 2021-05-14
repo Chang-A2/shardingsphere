@@ -20,19 +20,25 @@ package org.apache.shardingsphere.infra.database.type.dialect;
 import org.apache.shardingsphere.infra.database.metadata.dialect.MariaDBDataSourceMetaData;
 import org.apache.shardingsphere.infra.database.type.BranchDatabaseType;
 import org.apache.shardingsphere.infra.database.type.DatabaseType;
-import org.apache.shardingsphere.infra.database.type.DatabaseTypes;
+import org.apache.shardingsphere.infra.database.type.DatabaseTypeRegistry;
+import org.apache.shardingsphere.sql.parser.sql.common.constant.QuoteCharacter;
 
 import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Database type of Mariadb.
+ * Database type of MariaDB.
  */
 public final class MariaDBDatabaseType implements BranchDatabaseType {
     
     @Override
     public String getName() {
         return "MariaDB";
+    }
+    
+    @Override
+    public QuoteCharacter getQuoteCharacter() {
+        return QuoteCharacter.BACK_QUOTE;
     }
     
     @Override
@@ -47,6 +53,6 @@ public final class MariaDBDatabaseType implements BranchDatabaseType {
     
     @Override
     public DatabaseType getTrunkDatabaseType() {
-        return DatabaseTypes.getActualDatabaseType("MySQL");
+        return DatabaseTypeRegistry.getActualDatabaseType("MySQL");
     }
 }

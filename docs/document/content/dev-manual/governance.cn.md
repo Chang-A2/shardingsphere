@@ -1,40 +1,32 @@
 +++
-pre = "<b>5.8. </b>"
+pre = "<b>5.9. </b>"
 title = "分布式治理"
-weight = 8
+weight = 9
 chapter = true
 +++
 
-## ConfigurationRepository
+## RegistryCenterRepository
 
 | *SPI 名称*                       | *详细说明*               |
 | -------------------------------- | ----------------------- |
-| ConfigurationRepository          | 配置中心                 |
+| RegistryCenterRepository         | 注册中心                 |
 
 | *已知实现类*                      | *详细说明*               |
 | -------------------------------- | ----------------------- |
-| CuratorZookeeperRepository | 基于 ZooKeeper 的配置中心 |
-| EtcdRepository             | 基于 etcd 的配置中心      |
-| NacosRepository            | 基于 Nacos 的配置中心     |
-| ApolloRepository           | 基于 Apollo 的配置中心    |
+| CuratorZookeeperRepository       | 基于 ZooKeeper 的注册中心 |
+| EtcdRepository                   | 基于 etcd 的注册中心      |
 
-## RegistryRepository
+## GovernanceListenerFactory
 
 | *SPI 名称*                       | *详细说明*               |
 | -------------------------------- | ----------------------- |
-| RegistryRepository               | 注册中心                 |
+| GovernanceListenerFactory        | 治理监听器工厂            |
 
-| *已知实现类*                      | *详细说明*               |
-| -------------------------------- | ----------------------- |
-| CuratorZookeeperRepository | 基于 ZooKeeper 的注册中心 |
-| EtcdRepository             | 基于 etcd 的注册中心      |
-
-## RootInvokeHook
-
-| *SPI 名称*                 | *详细说明*                           |
-| ------------------------- | ------------------------------------ |
-| RootInvokeHook            | 请求调用入口追踪                       |
-
-| *已知实现类*               | *详细说明*                            |
-| ------------------------- | ------------------------------------ |
-| OpenTracingRootInvokeHook | 基于 OpenTracing 协议的请求调用入口追踪 |
+| *已知实现类*                           | *详细说明*           |
+| ------------------------------------- | ------------------- |
+| TerminalStateChangedListenerFactory   | 终端节点状态变化监听器 |
+| DataSourceStateChangedListenerFactory | 数据源状态变化监听器   |
+| LockChangedListenerFactory            | 锁状态变化监听器      |
+| PropertiesChangedListenerFactory      | 属性变化监听器        |
+| UserChangedListenerFactory            | 用户变化监听器        |
+| PrivilegeNodeChangedListenerFactory   | 权限变化监听器        |

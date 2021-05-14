@@ -26,7 +26,7 @@ Answer:
 The use norm of Spring Namespace does not require to deploy xsd files to the official website. But considering some users' needs, we will deploy them to ShardingSphere's official website.
 
 Actually, META-INF\spring.schemas in the jar package of shardingsphere-jdbc-spring-namespace has been configured with the position of xsd files: 
-META-INF\namespace\sharding.xsd and META-INF\namespace\primary-replica-replication.xsd, so you only need to make sure that the file is in the jar package.
+META-INF\namespace\sharding.xsd and META-INF\namespace\replica-query.xsd, so you only need to make sure that the file is in the jar package.
 
 ## 4. How to solve `Cloud not resolve placeholder … in string value …` error?
 
@@ -141,7 +141,7 @@ After using resultSet.getObject(int index), for TimeStamp oracle, the system wil
 
 Answer:
 
-When using `Proxool` to configure multiple data sources, each one of them should be configured with alias. It is because `Proxool` would check whether existing alias is included in the connection pool or not when acquiring connections, so without alias, each connection will be acquired from the same data source.
+When using `Proxool` to configure multiple data sources, each one of them should be configured with alias. It is because `Proxool` would check whether existing alias is included in the connection pool or not when acquiring connections, so without alias, each connection will be acquired from the same data source. 
 
 The followings are core codes from ProxoolDataSource getConnection method in `Proxool`:
 
@@ -244,7 +244,7 @@ Answer:
 1. Update to 4.1.0 above.
 2. Configure(A tip here: then each range query will be broadcast to every sharding table):
 - Version 4.x: `allow.range.query.with.inline.sharding` to `true` (Default value is `false`).
-- Version 5.x: `allow-range-query-with-inline-sharding` to `true` (Default value is `false`).
+- Version 5.x: `allow-range-query-with-inline-sharding` to `true` in InlineShardingStrategy (Default value is `false`).
 
 ## 20. Why there may be an error when configure both shardingsphere-jdbc-spring-boot-starter and a spring-boot-starter of certain datasource pool(such as druid)?
  
@@ -272,3 +272,11 @@ Answer:
 Answer:
 
 1. `shardingsphere-transaction-xa-core` include atomikos, it will trigger auto-configuration mechanism in spring-boot, add `@SpringBootApplication(exclude = JtaAutoConfiguration.class)` will solve it. 
+
+## 24. The ANTLR plugin generates codes in the same level directory as src, which is easy to commit by mistake. How to avoid it?
+
+Answer:
+
+Goto [Settings -> Languages & Frameworks -> ANTLR v4 default project settings](jetbrains://idea/settings?name=Languages+%26+Frameworks--ANTLR+v4+default+project+settings) and configure the output directory of the generated code as `target/gen` as shown:
+
+![Configure ANTLR plugin](https://shardingsphere.apache.org/document/current/img/faq/configure-antlr-plugin.png)

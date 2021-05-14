@@ -20,6 +20,7 @@ package org.apache.shardingsphere.driver.jdbc.adapter;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.driver.jdbc.unsupported.AbstractUnsupportedOperationStatement;
 import org.apache.shardingsphere.driver.jdbc.adapter.executor.ForceExecuteTemplate;
+import org.apache.shardingsphere.infra.optimize.execute.CalciteExecutor;
 
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -39,8 +40,8 @@ public abstract class AbstractStatementAdapter extends AbstractUnsupportedOperat
     private boolean poolable;
     
     private int fetchSize;
-
-    private int fecthDirection;
+    
+    private int fetchDirection;
     
     private final ForceExecuteTemplate<Statement> forceExecuteTemplate = new ForceExecuteTemplate<>();
     
@@ -50,8 +51,16 @@ public abstract class AbstractStatementAdapter extends AbstractUnsupportedOperat
         closed = true;
         try {
             forceExecuteTemplate.execute((Collection) getRoutedStatements(), Statement::close);
+            closeCalciteExecutor();
         } finally {
             getRoutedStatements().clear();
+        }
+    }
+    
+    private void closeCalciteExecutor() throws SQLException {
+        CalciteExecutor executor = getCalciteExecutor();
+        if (null != executor) {
+            executor.close();
         }
     }
     
@@ -85,15 +94,15 @@ public abstract class AbstractStatementAdapter extends AbstractUnsupportedOperat
         recordMethodInvocation(targetClass, "setFetchSize", new Class[] {int.class}, new Object[] {rows});
         forceExecuteTemplate.execute((Collection) getRoutedStatements(), statement -> statement.setFetchSize(rows));
     }
-
+    
     @Override
-    public int getFetchDirection() throws SQLException {
-        return fecthDirection;
+    public int getFetchDirection() {
+        return fetchDirection;
     }
-
+    
     @Override
     public void setFetchDirection(final int direction) throws SQLException {
-        this.fecthDirection = direction;
+        fetchDirection = direction;
         recordMethodInvocation(targetClass, "setFetchDirection", new Class[] {int.class}, new Object[] {direction});
         forceExecuteTemplate.execute((Collection) getRoutedStatements(), statement -> statement.setFetchDirection(direction));
     }
@@ -115,13 +124,12 @@ public abstract class AbstractStatementAdapter extends AbstractUnsupportedOperat
     public final int getUpdateCount() throws SQLException {
         if (isAccumulate()) {
             return accumulate();
-        } else {
-            Collection<? extends Statement> statements = getRoutedStatements();
-            if (statements.isEmpty()) {
-                return -1;
-            }
-            return getRoutedStatements().iterator().next().getUpdateCount();
         }
+        Collection<? extends Statement> statements = getRoutedStatements();
+        if (statements.isEmpty()) {
+            return -1;
+        }
+        return getRoutedStatements().iterator().next().getUpdateCount();
     }
     
     private int accumulate() throws SQLException {
@@ -203,4 +211,6 @@ public abstract class AbstractStatementAdapter extends AbstractUnsupportedOperat
     protected abstract boolean isAccumulate();
     
     protected abstract Collection<? extends Statement> getRoutedStatements();
+    
+    protected abstract CalciteExecutor getCalciteExecutor();
 }

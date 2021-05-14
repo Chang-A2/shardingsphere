@@ -18,11 +18,11 @@
 package org.apache.shardingsphere.db.protocol.postgresql.packet.command.query.binary.parse;
 
 import lombok.Getter;
-import lombok.ToString;
-import org.apache.shardingsphere.db.protocol.postgresql.constant.PostgreSQLColumnType;
+import org.apache.shardingsphere.db.protocol.postgresql.constant.PostgreSQLBinaryColumnType;
 import org.apache.shardingsphere.db.protocol.postgresql.packet.command.PostgreSQLCommandPacket;
 import org.apache.shardingsphere.db.protocol.postgresql.packet.command.PostgreSQLCommandPacketType;
 import org.apache.shardingsphere.db.protocol.postgresql.packet.command.query.binary.PostgreSQLBinaryStatementParameterType;
+import org.apache.shardingsphere.db.protocol.postgresql.packet.identifier.PostgreSQLIdentifierTag;
 import org.apache.shardingsphere.db.protocol.postgresql.payload.PostgreSQLPacketPayload;
 
 import java.util.ArrayList;
@@ -33,7 +33,6 @@ import java.util.List;
  * Command parse packet for PostgreSQL.
  */
 @Getter
-@ToString
 public final class PostgreSQLComParsePacket extends PostgreSQLCommandPacket {
     
     private final String statementId;
@@ -53,7 +52,7 @@ public final class PostgreSQLComParsePacket extends PostgreSQLCommandPacket {
         int parameterCount = payload.readInt2();
         List<PostgreSQLBinaryStatementParameterType> result = new ArrayList<>(parameterCount); 
         for (int i = 0; i < parameterCount; i++) {
-            result.add(new PostgreSQLBinaryStatementParameterType(PostgreSQLColumnType.valueOf(payload.readInt4())));
+            result.add(new PostgreSQLBinaryStatementParameterType(PostgreSQLBinaryColumnType.valueOf(payload.readInt4())));
         }
         return result;
     }
@@ -67,7 +66,7 @@ public final class PostgreSQLComParsePacket extends PostgreSQLCommandPacket {
     }
     
     @Override
-    public char getMessageType() {
-        return PostgreSQLCommandPacketType.PARSE.getValue();
+    public PostgreSQLIdentifierTag getIdentifier() {
+        return PostgreSQLCommandPacketType.PARSE_COMMAND;
     }
 }

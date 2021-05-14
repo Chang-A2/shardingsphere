@@ -1,5 +1,5 @@
 +++
-pre = "<b>4.5.2. </b>"
+pre = "<b>4.4.2. </b>"
 title = "Manual"
 weight = 2
 +++
@@ -51,17 +51,24 @@ ShardingSphere-Scaling provides a simple HTTP API
 
 Interface description：POST /scaling/job/start
 
-Body：
+Body:
 
-| Parameter                                         | Describe                                        |
-|---------------------------------------------------|-------------------------------------------------|
-| ruleConfiguration.sourceDataSource                | source sharding sphere data source configuration |
-| ruleConfiguration.sourceRule                      | source sharding sphere table rule configuration  |
-| ruleConfiguration.targetDataSources.name          | target sharding proxy name                      |
-| ruleConfiguration.targetDataSources.url           | target sharding proxy jdbc url                  |
-| ruleConfiguration.targetDataSources.username      | target sharding proxy username                  |
-| ruleConfiguration.targetDataSources.password      | target sharding proxy password                  |
-| jobConfiguration.concurrency                      | sync task proposed concurrency                  |
+| Parameter                                         | Describe                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| ruleConfig.source                                 | source data source configuration                             |
+| ruleConfig.target                                 | target data source configuration                             |
+| jobConfiguration.concurrency                      | sync task proposed concurrency                               |
+
+Data source configuration:
+
+| Parameter                                         | Describe                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| type                                              | data source type(available parameters:shardingSphereJdbc,jdbc)|
+| parameter                                         | data source parameter                                        |
+
+*** Notice ***
+
+Currently source type must shardingSphereJdbc
 
 Example：
 
@@ -70,53 +77,53 @@ curl -X POST \
   http://localhost:8888/scaling/job/start \
   -H 'content-type: application/json' \
   -d '{
-        "ruleConfiguration": {
-          "sourceDataSource":"
-            dataSources:
-              ds_0:
-                dataSourceClassName: com.zaxxer.hikari.HikariDataSource
-                props:
-                  driverClassName: com.mysql.jdbc.Driver
-                  jdbcUrl: jdbc:mysql://127.0.0.1:3306/scaling_0?useSSL=false
-                  username: scaling
-                  password: scaling
-              ds_1:
-                dataSourceClassName: com.zaxxer.hikari.HikariDataSource
-                props:
-                  driverClassName: com.mysql.jdbc.Driver
-                  jdbcUrl: jdbc:mysql://127.0.0.1:3306/scaling_1?useSSL=false
-                  username: scaling
-                  password: scaling
-            ",
-          "sourceRule":"
-            rules:
-            - !SHARDING
-              tables:
-                t_order:
-                  actualDataNodes: ds_$->{0..1}.t_order_$->{0..1}
-                  databaseStrategy:
-                    standard:
-                      shardingColumn: order_id
-                      shardingAlgorithmName: t_order_db_algorith
-                  logicTable: t_order
-                  tableStrategy:
-                    standard:
-                      shardingColumn: user_id
-                      shardingAlgorithmName: t_order_tbl_algorith
-              shardingAlgorithms:
-                t_order_db_algorith:
-                  type: INLINE
-                  props:
-                    algorithm-expression: ds_$->{order_id % 2}
-                t_order_tbl_algorith:
-                  type: INLINE
-                  props:
-                    algorithm-expression: t_order_$->{user_id % 2}
-            ",
-          "targetDataSources":{
-            "username":"root",
-            "password":"root",
-            "url":"jdbc:mysql://127.0.0.1:3307/sharding_db?serverTimezone=UTC&useSSL=false"
+        "ruleConfig": {
+          "source": {
+            "type": "shardingSphereJdbc",
+            "parameter": "
+                dataSources:
+                  ds_0:
+                    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+                    jdbcUrl: jdbc:mysql://127.0.0.1:3306/scaling_0?useSSL=false
+                    username: scaling
+                    password: scaling
+                  ds_1:
+                    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+                    jdbcUrl: jdbc:mysql://127.0.0.1:3306/scaling_1?useSSL=false
+                    username: scaling
+                    password: scaling
+                rules:
+                - !SHARDING
+                  tables:
+                    t_order:
+                      actualDataNodes: ds_$->{0..1}.t_order_$->{0..1}
+                      databaseStrategy:
+                        standard:
+                          shardingColumn: order_id
+                          shardingAlgorithmName: t_order_db_algorith
+                      logicTable: t_order
+                      tableStrategy:
+                        standard:
+                          shardingColumn: user_id
+                          shardingAlgorithmName: t_order_tbl_algorith
+                  shardingAlgorithms:
+                    t_order_db_algorith:
+                      type: INLINE
+                      props:
+                        algorithm-expression: ds_$->{order_id % 2}
+                    t_order_tbl_algorith:
+                      type: INLINE
+                      props:
+                        algorithm-expression: t_order_$->{user_id % 2}
+                "
+          },
+          "target": {
+              "type": "jdbc",
+              "parameter": "
+                username: root
+                password: root
+                jdbcUrl: jdbc:mysql://127.0.0.1:3307/sharding_db?serverTimezone=UTC&useSSL=false
+                "
           }
         },
         "jobConfiguration":{
@@ -226,7 +233,7 @@ Response：
 
 #### Stop scaling job
 
-Interface description：POST /scaling/job/stop
+Interface description：GET /scaling/job/stop
 
 Body：
 
@@ -236,12 +243,8 @@ Body：
 
 Example：
 ```
-curl -X POST \
-  http://localhost:8888/scaling/job/stop \
-  -H 'content-type: application/json' \
-  -d '{
-   "jobId":1
-}'
+curl -X GET \
+  http://localhost:8888/scaling/job/stop/1
 ```
 Response：
 ```

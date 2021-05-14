@@ -17,12 +17,15 @@
 
 package org.apache.shardingsphere.sharding.route.engine.condition.generator.impl;
 
+import org.apache.shardingsphere.infra.datetime.DatetimeService;
+import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
 import org.apache.shardingsphere.sharding.route.engine.condition.Column;
-import org.apache.shardingsphere.sharding.strategy.value.ListRouteValue;
-import org.apache.shardingsphere.sharding.strategy.value.RouteValue;
+import org.apache.shardingsphere.sharding.route.engine.condition.value.ListShardingConditionValue;
+import org.apache.shardingsphere.sharding.route.engine.condition.value.ShardingConditionValue;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.expr.InExpression;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.expr.ListExpression;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.expr.complex.CommonExpressionSegment;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
@@ -39,13 +42,18 @@ public final class ConditionValueInOperatorGeneratorTest {
     
     private final Column column = new Column("id", "tbl");
     
+    @Before
+    public void setup() {
+        ShardingSphereServiceLoader.register(DatetimeService.class);
+    }
+    
     @Test
     public void assertNowExpression() {
         ListExpression listExpression = new ListExpression(0, 0);
         listExpression.getItems().add(new CommonExpressionSegment(0, 0, "now()"));
         InExpression inExpression = new InExpression(0, 0, null, listExpression, false);
-        Optional<RouteValue> routeValue = generator.generate(inExpression, column, new LinkedList<>());
-        assertTrue(routeValue.isPresent());
-        assertThat(((ListRouteValue) routeValue.get()).getValues().iterator().next(), instanceOf(Date.class));
+        Optional<ShardingConditionValue> shardingConditionValue = generator.generate(inExpression, column, new LinkedList<>());
+        assertTrue(shardingConditionValue.isPresent());
+        assertThat(((ListShardingConditionValue) shardingConditionValue.get()).getValues().iterator().next(), instanceOf(Date.class));
     }
 }

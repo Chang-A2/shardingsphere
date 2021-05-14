@@ -20,8 +20,8 @@ package org.apache.shardingsphere.shadow.condition;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.infra.exception.ShardingSphereException;
 import org.apache.shardingsphere.shadow.rule.ShadowRule;
-import org.apache.shardingsphere.sql.parser.binder.statement.SQLStatementContext;
-import org.apache.shardingsphere.sql.parser.binder.type.WhereAvailable;
+import org.apache.shardingsphere.infra.binder.statement.SQLStatementContext;
+import org.apache.shardingsphere.infra.binder.type.WhereAvailable;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.column.ColumnSegment;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.expr.BetweenExpression;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.expr.BinaryOperationExpression;
@@ -31,7 +31,7 @@ import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.expr.simple.S
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.predicate.AndPredicate;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.predicate.WhereSegment;
 import org.apache.shardingsphere.sql.parser.sql.common.util.ExpressionBuilder;
-import org.apache.shardingsphere.sql.parser.sql.common.util.ColumnExtractFromExpression;
+import org.apache.shardingsphere.sql.parser.sql.common.util.ColumnExtractor;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -60,13 +60,15 @@ public final class ShadowConditionEngine {
         if (!whereSegment.isPresent()) {
             return Optional.empty();
         }
-        ExpressionSegment expression = ((WhereAvailable) sqlStatementContext).getWhere().get().getExpr();
-        ExpressionBuilder expressionBuilder = new ExpressionBuilder(expression);
-        Collection<AndPredicate> andPredicates = new LinkedList<>(expressionBuilder.extractAndPredicates().getAndPredicates());
-        for (AndPredicate each : andPredicates) {
-            Optional<ShadowCondition> condition = createShadowCondition(each);
-            if (condition.isPresent()) {
-                return condition;
+        if (((WhereAvailable) sqlStatementContext).getWhere().isPresent()) {
+            ExpressionSegment expression = ((WhereAvailable) sqlStatementContext).getWhere().get().getExpr();
+            ExpressionBuilder expressionBuilder = new ExpressionBuilder(expression);
+            Collection<AndPredicate> andPredicates = new LinkedList<>(expressionBuilder.extractAndPredicates().getAndPredicates());
+            for (AndPredicate each : andPredicates) {
+                Optional<ShadowCondition> condition = createShadowCondition(each);
+                if (condition.isPresent()) {
+                    return condition;
+                }
             }
         }
         // FIXME process subquery
@@ -83,7 +85,7 @@ public final class ShadowConditionEngine {
     
     private Optional<ShadowCondition> createShadowCondition(final AndPredicate andPredicate) {
         for (ExpressionSegment predicate : andPredicate.getPredicates()) {
-            Optional<ColumnSegment> column = ColumnExtractFromExpression.extract(predicate);
+            Optional<ColumnSegment> column = ColumnExtractor.extract(predicate);
             if (!column.isPresent()) {
                 continue;
             }

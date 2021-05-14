@@ -679,7 +679,7 @@
     </insert>
 
     <insert sql-case-id="insert_with_batch_and_composite_expression" parameters="1, 1, 'init', 2, 2, 'init'">
-            <table name="t_order" start-index="12" stop-index="18" />
+        <table name="t_order" start-index="12" stop-index="18" />
         <columns start-index="20" stop-index="46">
             <column name="order_id" start-index="21" stop-index="28" />
             <column name="user_id" start-index="31" stop-index="37" />
@@ -1157,27 +1157,27 @@
             <column name="status" start-index="40" stop-index="45" />
         </columns>
         <select>
-            <table-reference>
-                <table-factor>
-                    <table name="t_order" start-index="86" stop-index="92" />
-                </table-factor>
-            </table-reference>
+            <from>
+                <simple-table name="t_order" start-index="86" stop-index="92" />
+            </from>
             <projections start-index="55" stop-index="79">
                 <column-projection name="order_id" start-index="55" stop-index="62" />
                 <column-projection name="user_id" start-index="65" stop-index="71" />
                 <column-projection name="status" start-index="74" stop-index="79" />
             </projections>
-            <where start-index="94" stop-index="111">
-                <and-predicate>
-                    <predicate start-index="100" stop-index="111" literal-stop-index="113">
-                        <column-left-value name="order_id" start-index="100" stop-index="107" />
-                        <operator type="=" />
-                        <compare-right-value>
-                            <parameter-marker-expression value="0" start-index="111" stop-index="111" />
+            <where start-index="94" stop-index="111" literal-stop-index="113">
+                <expr>
+                    <binary-operation-expression start-index="100" stop-index="111" literal-stop-index="113">
+                        <left>
+                            <column name="order_id" start-index="100" stop-index="107" />
+                        </left>
+                        <operator>=</operator>
+                        <right>
                             <literal-expression value="100" start-index="111" stop-index="113" />
-                        </compare-right-value>
-                    </predicate>
-                </and-predicate>
+                            <parameter-marker-expression value="0" start-index="111" stop-index="111" />
+                        </right>
+                    </binary-operation-expression>
+                </expr>
             </where>
         </select>
     </insert>
@@ -1186,27 +1186,27 @@
         <table name="t_order" start-index="12" stop-index="18" />
         <columns start-index="19" stop-index="19" />
         <select>
-            <table-reference>
-                <table-factor>
-                    <table name="t_order" start-index="58" stop-index="64" />
-                </table-factor>
-            </table-reference>
+            <from>
+                <simple-table name="t_order" start-index="58" stop-index="64" />
+            </from>
             <projections start-index="27" stop-index="51">
                 <column-projection name="order_id" start-index="27" stop-index="34" />
                 <column-projection name="user_id" start-index="37" stop-index="43" />
                 <column-projection name="status" start-index="46" stop-index="51" />
             </projections>
-            <where start-index="66" stop-index="83">
-                <and-predicate>
-                    <predicate start-index="72" stop-index="83" literal-stop-index="85">
-                        <column-left-value name="order_id" start-index="72" stop-index="79" />
-                        <operator type="=" />
-                        <compare-right-value>
-                            <parameter-marker-expression value="0" start-index="83" stop-index="83" />
+            <where start-index="66" stop-index="83" literal-stop-index="85">
+                <expr>
+                    <binary-operation-expression start-index="72" stop-index="83" literal-stop-index="85">
+                        <left>
+                            <column name="order_id" start-index="72" stop-index="79" />
+                        </left>
+                        <operator>=</operator>
+                        <right>
                             <literal-expression value="100" start-index="83" stop-index="85" />
-                        </compare-right-value>
-                    </predicate>
-                </and-predicate>
+                            <parameter-marker-expression value="0" start-index="83" stop-index="83" />
+                        </right>
+                    </binary-operation-expression>
+                </expr>
             </where>
         </select>
     </insert>
@@ -1221,29 +1221,29 @@
             <column name="creation_date" start-index="61" stop-index="73" />
         </columns>
         <select>
-            <table-reference>
-                <table-factor>
-                    <table name="t_order_item" start-index="139" stop-index="150" />
-                </table-factor>
-            </table-reference>
+            <from>
+                <simple-table name="t_order_item" start-index="139" stop-index="150" />
+            </from>
             <projections start-index="83" stop-index="132">
                 <column-projection name="item_id" start-index="83" stop-index="89" />
                 <column-projection name="order_id" start-index="92" stop-index="99" />
                 <column-projection name="user_id" start-index="102" stop-index="108" />
-                <expression-projection start-index="111" stop-index="118" />
-                <expression-projection start-index="121" stop-index="132" />
+                <expression-projection text="insert" start-index="111" stop-index="118" />
+                <expression-projection text="2017-08-08" start-index="121" stop-index="132" />
             </projections>
-            <where start-index="152" stop-index="168">
-                <and-predicate>
-                    <predicate start-index="158" stop-index="168" literal-stop-index="170">
-                        <column-left-value name="item_id" start-index="158" stop-index="164" />
-                        <operator type="=" />
-                        <compare-right-value>
-                            <parameter-marker-expression value="0" start-index="168" stop-index="168" />
+            <where start-index="152" stop-index="168" literal-stop-index="170">
+                <expr>
+                    <binary-operation-expression start-index="158" stop-index="168" literal-stop-index="170">
+                        <left>
+                            <column name="item_id" start-index="158" stop-index="164" />
+                        </left>
+                        <operator>=</operator>
+                        <right>
                             <literal-expression value="100" start-index="168" stop-index="170" />
-                        </compare-right-value>
-                    </predicate>
-                </and-predicate>
+                            <parameter-marker-expression value="0" start-index="168" stop-index="168" />
+                        </right>
+                    </binary-operation-expression>
+                </expr>
             </where>
         </select>
     </insert>
@@ -1257,28 +1257,28 @@
             <column name="creation_date" start-index="52" stop-index="64" />
         </columns>
         <select>
-            <table-reference>
-                <table-factor>
-                    <table name="t_order_item" start-index="121" stop-index="132" />
-                </table-factor>
-            </table-reference>
+            <from>
+                <simple-table name="t_order_item" start-index="121" stop-index="132" />
+            </from>
             <projections start-index="74" stop-index="114">
                 <column-projection name="order_id" start-index="74" stop-index="81" />
                 <column-projection name="user_id" start-index="84" stop-index="90" />
-                <expression-projection start-index="93" stop-index="100" />
-                <expression-projection start-index="103" stop-index="114" />
+                <expression-projection text="insert" start-index="93" stop-index="100" />
+                <expression-projection text="2017-08-08" start-index="103" stop-index="114" />
             </projections>
-            <where start-index="134" stop-index="151">
-                <and-predicate>
-                    <predicate start-index="140" stop-index="151" literal-stop-index="153">
-                        <column-left-value name="order_id" start-index="140" stop-index="147" />
-                        <operator type="=" />
-                        <compare-right-value>
-                            <parameter-marker-expression value="0" start-index="151" stop-index="151" />
+            <where start-index="134" stop-index="151" literal-stop-index="153">
+                <expr>
+                    <binary-operation-expression start-index="140" stop-index="151" literal-stop-index="153">
+                        <left>
+                            <column name="order_id" start-index="140" stop-index="147" />
+                        </left>
+                        <operator>=</operator>
+                        <right>
                             <literal-expression value="100" start-index="151" stop-index="153" />
-                        </compare-right-value>
-                    </predicate>
-                </and-predicate>
+                            <parameter-marker-expression value="0" start-index="151" stop-index="151" />
+                        </right>
+                    </binary-operation-expression>
+                </expr>
             </where>
         </select>
     </insert>
@@ -1291,27 +1291,27 @@
             <column name="status" start-index="39" stop-index="44" />
         </columns>
         <select>
-            <table-reference>
-                <table-factor>
-                    <table name="t_order" start-index="85" stop-index="91" />
-                </table-factor>
-            </table-reference>
+            <from>
+                <simple-table name="t_order" start-index="85" stop-index="91" />
+            </from>
             <projections start-index="54" stop-index="78">
                 <column-projection name="order_id" start-index="54" stop-index="61" />
                 <column-projection name="user_id" start-index="64" stop-index="70" />
                 <column-projection name="status" start-index="73" stop-index="78" />
             </projections>
-            <where start-index="93" stop-index="110">
-                <and-predicate>
-                    <predicate start-index="99" stop-index="110" literal-stop-index="112">
-                        <column-left-value name="order_id" start-index="99" stop-index="106" />
-                        <operator type="=" />
-                        <compare-right-value>
-                            <parameter-marker-expression value="0" start-index="110" stop-index="110" literal-stop-index="112" />
+            <where start-index="93" stop-index="110" literal-stop-index="112">
+                <expr>
+                    <binary-operation-expression start-index="99" stop-index="110" literal-stop-index="112">
+                        <left>
+                            <column name="order_id" start-index="99" stop-index="106" />
+                        </left>
+                        <operator>=</operator>
+                        <right>
                             <literal-expression value="100" start-index="110" stop-index="112" />
-                        </compare-right-value>
-                    </predicate>
-                </and-predicate>
+                            <parameter-marker-expression value="0" start-index="110" stop-index="110" />
+                        </right>
+                    </binary-operation-expression>
+                </expr>
             </where>
         </select>
         <on-duplicate-key-columns start-index="112" stop-index="158" literal-start-index="114" literal-stop-index="160">
@@ -1338,7 +1338,7 @@
             </value>
         </values>
     </insert>
-    
+
     <insert sql-case-id="insert_with_digit_literals_value">
         <table name="digit_literals_value_test" start-index="12" stop-index="36" />
         <columns start-index="37" stop-index="42">
@@ -1352,7 +1352,7 @@
             </value>
         </values>
     </insert>
-    
+
     <insert sql-case-id="insert_with_with_clause">
         <with start-index="0" stop-index="70">
             <common-table-expression name = "cte" start-index="5" stop-index="70">
@@ -1362,11 +1362,9 @@
                 </columns>
                 <subquery-expression>
                     <select>
-                        <table-reference>
-                            <table-factor>
-                                <table name="t_order" start-index="63" stop-index="69" />
-                            </table-factor>
-                        </table-reference>
+                        <from>
+                            <simple-table name="t_order" start-index="63" stop-index="69" />
+                        </from>
                         <projections start-index="40" stop-index="56">
                             <column-projection name="order_id" start-index="40" stop-index="47" />
                             <column-projection name="user_id" start-index="50" stop-index="56" />
@@ -1381,28 +1379,24 @@
             <column name="user_id" start-index="103" stop-index="109"/>
         </columns>
         <select>
-            <table-reference>
-                <table-factor>
-                    <table name="cte" start-index="142" stop-index="144" />
-                </table-factor>
-            </table-reference>
+            <from>
+                <simple-table name="cte" start-index="142" stop-index="144" />
+            </from>
             <projections start-index="119" stop-index="135">
                 <column-projection name="order_id" start-index="119" stop-index="126" />
                 <column-projection name="user_id" start-index="129" stop-index="135" />
             </projections>
         </select>
     </insert>
-    
+
     <insert sql-case-id="insert_without_columns_with_with_clause">
         <with start-index="0" stop-index="50">
             <common-table-expression name="cte" start-index="5" stop-index="50">
                 <subquery-expression>
                     <select>
-                        <table-reference>
-                            <table-factor>
-                                <table name="t_order" start-index="43" stop-index="49" />
-                            </table-factor>
-                        </table-reference>
+                        <from>
+                            <simple-table name="t_order" start-index="43" stop-index="49" />
+                        </from>
                         <projections start-index="20" stop-index="36">
                             <column-projection name="order_id" start-index="20" stop-index="27" />
                             <column-projection name="user_id" start-index="30" stop-index="36" />
@@ -1417,18 +1411,16 @@
             <column name="user_id" start-index="83" stop-index="89"/>
         </columns>
         <select>
-            <table-reference>
-                <table-factor>
-                    <table name="cte" start-index="122" stop-index="124" />
-                </table-factor>
-            </table-reference>
+            <from>
+                <simple-table name="cte" start-index="122" stop-index="124" />
+            </from>
             <projections start-index="99" stop-index="115">
                 <column-projection name="order_id" start-index="99" stop-index="106" />
                 <column-projection name="user_id" start-index="109" stop-index="115" />
             </projections>
         </select>
     </insert>
-    
+
     <insert sql-case-id="insert_without_into_keyword" parameters="1, 1, 'init'">
         <table name="t_order" start-index="7" stop-index="13" />
         <columns start-index="15" stop-index="41">
@@ -1453,7 +1445,7 @@
             </value>
         </values>
     </insert>
-    
+
     <insert sql-case-id="insert_with_default_values">
         <table name="t_order" start-index="12" stop-index="18" />
         <columns start-index="20" stop-index="46">
@@ -1462,12 +1454,12 @@
             <column name="status" start-index="40" stop-index="45" />
         </columns>
     </insert>
-    
+
     <insert sql-case-id="insert_without_columns_with_default_values">
         <table name="t_order" start-index="12" stop-index="18" />
         <columns start-index="19" stop-index="19" />
     </insert>
-    
+
     <insert sql-case-id="insert_with_top">
         <table name="t_order" start-index="15" stop-index="21" />
         <columns start-index="23" stop-index="41">
@@ -1475,18 +1467,16 @@
             <column name="user_id" start-index="34" stop-index="40" />
         </columns>
         <select>
-            <table-reference>
-                <table-factor>
-                    <table name="t_order" start-index="73" stop-index="79" />
-                </table-factor>
-            </table-reference>
+            <from>
+                <simple-table name="t_order" start-index="73" stop-index="79" />
+            </from>
             <projections start-index="50" stop-index="66">
                 <column-projection name="order_id" start-index="50" stop-index="57" />
                 <column-projection name="user_id" start-index="60" stop-index="66" />
             </projections>
         </select>
     </insert>
-    
+
     <insert sql-case-id="insert_with_top_percent">
         <table name="t_order" start-index="23" stop-index="29" />
         <columns start-index="31" stop-index="49">
@@ -1494,18 +1484,16 @@
             <column name="user_id" start-index="42" stop-index="48" />
         </columns>
         <select>
-            <table-reference>
-                <table-factor>
-                    <table name="t_order" start-index="81" stop-index="87" />
-                </table-factor>
-            </table-reference>
+            <from>
+                <simple-table name="t_order" start-index="81" stop-index="87" />
+            </from>
             <projections start-index="58" stop-index="74">
                 <column-projection name="order_id" start-index="58" stop-index="65" />
                 <column-projection name="user_id" start-index="68" stop-index="74" />
             </projections>
         </select>
     </insert>
-    
+
     <insert sql-case-id="insert_with_output_clause" parameters="1, 1">
         <table name="t_order" start-index="12" stop-index="18" />
         <columns start-index="20" stop-index="38">
@@ -1540,7 +1528,7 @@
             </value>
         </values>
     </insert>
-    
+
     <insert sql-case-id="insert_with_output_clause_without_output_table_columns" parameters="1, 1">
         <table name="t_order" start-index="12" stop-index="18" />
         <columns start-index="20" stop-index="38">
@@ -1571,7 +1559,7 @@
             </value>
         </values>
     </insert>
-    
+
     <insert sql-case-id="insert_with_output_clause_without_output_table" parameters="1, 1">
         <table name="t_order" start-index="12" stop-index="18" />
         <columns start-index="20" stop-index="38">
@@ -1601,7 +1589,7 @@
             </value>
         </values>
     </insert>
-    
+
     <insert sql-case-id="insert_with_output_clause_column_shorthand" parameters="1, 1">
         <table name="t_order" start-index="12" stop-index="18" />
         <columns start-index="20" stop-index="38">

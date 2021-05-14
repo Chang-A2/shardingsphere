@@ -19,7 +19,6 @@ package org.apache.shardingsphere.transaction.xa.bitronix.manager;
 
 import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.resource.ResourceRegistrar;
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.transaction.xa.bitronix.manager.fixture.ReflectiveUtil;
 import org.apache.shardingsphere.transaction.xa.spi.SingleXAResource;
 import org.junit.Before;
@@ -28,10 +27,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.sql.XAConnection;
 import javax.sql.XADataSource;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import javax.transaction.Transaction;
-import javax.transaction.xa.XAResource;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
@@ -52,14 +51,9 @@ public final class BitronixXATransactionManagerTest {
     @Mock
     private XADataSource xaDataSource;
     
-    @SneakyThrows
     @Before
     public void setUp() {
         ReflectiveUtil.setProperty(bitronixXATransactionManager, "bitronixTransactionManager", bitronixTransactionManager);
-        XAConnection xaConnection = mock(XAConnection.class);
-        XAResource xaResource = mock(XAResource.class);
-        when(xaConnection.getXAResource()).thenReturn(xaResource);
-        when(xaDataSource.getXAConnection()).thenReturn(xaConnection);
     }
     
     @Test
@@ -70,9 +64,8 @@ public final class BitronixXATransactionManagerTest {
         assertNull(ResourceRegistrar.get("ds1"));
     }
     
-    @SneakyThrows
     @Test
-    public void assertEnlistResource() {
+    public void assertEnlistResource() throws SystemException, RollbackException {
         SingleXAResource singleXAResource = mock(SingleXAResource.class);
         Transaction transaction = mock(Transaction.class);
         when(bitronixTransactionManager.getTransaction()).thenReturn(transaction);

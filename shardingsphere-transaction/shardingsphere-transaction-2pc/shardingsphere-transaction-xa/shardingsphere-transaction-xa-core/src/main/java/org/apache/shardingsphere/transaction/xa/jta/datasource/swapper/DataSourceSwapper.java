@@ -27,6 +27,7 @@ import org.apache.shardingsphere.transaction.xa.jta.datasource.properties.XAData
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -111,8 +112,8 @@ public final class DataSourceSwapper {
     }
     
     @SneakyThrows(ReflectiveOperationException.class)
-    private void setProperties(final XADataSource xaDataSource, final Map<String, Object> databaseAccessConfiguration) {
-        for (Entry<String, Object> entry : databaseAccessConfiguration.entrySet()) {
+    private void setProperties(final XADataSource xaDataSource, final Map<String, Object> databaseAccessConfig) {
+        for (Entry<String, Object> entry : databaseAccessConfig.entrySet()) {
             Optional<Method> method = findSetterMethod(xaDataSource.getClass().getMethods(), entry.getKey());
             if (method.isPresent()) {
                 method.get().invoke(xaDataSource, entry.getValue());
@@ -129,11 +130,8 @@ public final class DataSourceSwapper {
     
     private Optional<Method> findSetterMethod(final Method[] methods, final String property) {
         String setterMethodName = Joiner.on("").join(SETTER_PREFIX, CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, property));
-        for (Method each : methods) {
-            if (each.getName().equals(setterMethodName) && 1 == each.getParameterTypes().length) {
-                return Optional.of(each);
-            }
-        }
-        return Optional.empty();
+        return Arrays.stream(methods)
+                .filter(each -> each.getName().equals(setterMethodName) && 1 == each.getParameterTypes().length)
+                .findFirst();
     }
 }

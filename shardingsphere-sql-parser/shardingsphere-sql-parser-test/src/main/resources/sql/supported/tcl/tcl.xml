@@ -21,10 +21,15 @@
     <sql-case id="commit" value="COMMIT" db-types="MySQL,Oracle,SQLServer,PostgreSQL" />
     <sql-case id="commitWithName" value="COMMIT TRANSACTION transaction1" db-types="SQLServer" />
     <sql-case id="commitWithComment" value="COMMIT COMMENT 'comment1'" db-types="Oracle" />
+    <sql-case id="commitWorkWithComment" value="COMMIT WORK COMMENT 'comment1'" db-types="Oracle" />
+    <sql-case id="commitWork" value="COMMIT WORK" db-types="Oracle" />
+    <sql-case id="commitWriteBatch" value="COMMIT WRITE BATCH" db-types="Oracle" />
     <sql-case id="commitForce" value="COMMIT FORCE 'transaction1'" db-types="Oracle" />
+    <sql-case id="commitWorkForce" value="COMMIT WORK FORCE '22.14.67'" db-types="Oracle" />
     <sql-case id="rollback" value="ROLLBACK" db-types="MySQL,Oracle,PostgreSQL,SQLServer" />
     <sql-case id="rollbackWithName" value="ROLLBACK TRANSACTION transaction1" db-types="SQLServer" />
     <sql-case id="rollbackForce" value="ROLLBACK FORCE 'transaction1'" db-types="Oracle" />
+    <sql-case id="rollbackWorkForce" value="ROLLBACK WORK FORCE 'string1'" db-types="Oracle" />
     <sql-case id="savepoint" value="SAVEPOINT savepoint1" db-types="MySQL,PostgreSQL" />
     <sql-case id="begin" value="BEGIN" db-types="MySQL,PostgreSQL" />
     <sql-case id="beginTransaction" value="BEGIN TRANSACTION" db-types="SQLServer,PostgreSQL" />
@@ -48,4 +53,11 @@
     <sql-case id="commit_in_pg" value="COMMIT TRANSACTION AND NO CHAIN" db-types="PostgreSQL" />
     <sql-case id="rollback_in_pg" value="ROLLBACK TRANSACTION AND CHAIN" db-types="PostgreSQL" />
     <sql-case id="begin_with_transaction_mode" value="BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED" db-types="PostgreSQL" />
+    <sql-case id="xa-recover" value="XA RECOVER" db-types="MySQL" />
+    <sql-case id="xa-start" value="XA start 'abcdef7' join" db-types="MySQL" />
+    <sql-case id="xa-begin" value="XA begin 'abcdef7' join" db-types="MySQL" />
+    <sql-case id="xa-end" value="XA end 'abcdef7'" db-types="MySQL" />
+    <sql-case id="xa-prepare" value="XA prepare 'abcdef7'" db-types="MySQL" />
+    <sql-case id="xa-commit" value="XA commit 'abcdef7'" db-types="MySQL" />
+    <sql-case id="xa-rollback" value="XA rollback 'abcdef7'" db-types="MySQL" />
 </sql-cases>

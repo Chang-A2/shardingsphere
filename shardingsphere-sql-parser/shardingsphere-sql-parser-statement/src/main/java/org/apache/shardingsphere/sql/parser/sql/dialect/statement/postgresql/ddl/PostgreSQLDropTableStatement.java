@@ -17,11 +17,19 @@
 
 package org.apache.shardingsphere.sql.parser.sql.dialect.statement.postgresql.ddl;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.shardingsphere.sql.parser.sql.common.statement.ddl.DropTableStatement;
 import org.apache.shardingsphere.sql.parser.sql.dialect.statement.postgresql.PostgreSQLStatement;
 
 /**
  * PostgreSQL drop table statement.
  */
+@Getter
+@Setter
+@ToString
 public final class PostgreSQLDropTableStatement extends DropTableStatement implements PostgreSQLStatement {
+    
+    private boolean containsIfExistClause;
 }

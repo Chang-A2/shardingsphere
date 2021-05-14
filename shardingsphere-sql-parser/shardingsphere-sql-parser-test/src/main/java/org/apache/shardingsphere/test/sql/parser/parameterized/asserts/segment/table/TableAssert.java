@@ -19,27 +19,30 @@ package org.apache.shardingsphere.test.sql.parser.parameterized.asserts.segment.
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.OwnerSegment;
-import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.SchemaSegment;
+import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.table.JoinTableSegment;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.table.SimpleTableSegment;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.table.SubqueryTableSegment;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.table.TableSegment;
 import org.apache.shardingsphere.test.sql.parser.parameterized.asserts.SQLCaseAssertContext;
 import org.apache.shardingsphere.test.sql.parser.parameterized.asserts.segment.SQLSegmentAssert;
-import org.apache.shardingsphere.test.sql.parser.parameterized.asserts.segment.schema.SchemaAssert;
+import org.apache.shardingsphere.test.sql.parser.parameterized.asserts.segment.column.ColumnAssert;
+import org.apache.shardingsphere.test.sql.parser.parameterized.asserts.segment.expression.ExpressionAssert;
+import org.apache.shardingsphere.test.sql.parser.parameterized.asserts.segment.owner.OwnerAssert;
 import org.apache.shardingsphere.test.sql.parser.parameterized.asserts.statement.dml.impl.SelectStatementAssert;
+import org.apache.shardingsphere.test.sql.parser.parameterized.asserts.value.IdentifierValueAssert;
+import org.apache.shardingsphere.test.sql.parser.parameterized.jaxb.cases.domain.segment.impl.table.ExpectedTable;
+import org.apache.shardingsphere.test.sql.parser.parameterized.jaxb.cases.domain.segment.impl.column.ExpectedColumn;
 import org.apache.shardingsphere.test.sql.parser.parameterized.jaxb.cases.domain.segment.impl.table.ExpectedSimpleTable;
-import org.apache.shardingsphere.test.sql.parser.parameterized.jaxb.cases.domain.segment.impl.table.ExpectedSimpleTableOwner;
+import org.apache.shardingsphere.test.sql.parser.parameterized.jaxb.cases.domain.segment.impl.table.ExpectedJoinTable;
 import org.apache.shardingsphere.test.sql.parser.parameterized.jaxb.cases.domain.segment.impl.table.ExpectedSubqueryTable;
-import org.apache.shardingsphere.test.sql.parser.parameterized.jaxb.cases.domain.segment.impl.table.ExpectedTables;
 
 import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Table assert.
@@ -54,15 +57,73 @@ public final class TableAssert {
      * @param actual actual tables
      * @param expected expected tables
      */
-    public static void assertIs(final SQLCaseAssertContext assertContext, final Collection<TableSegment> actual, final ExpectedTables expected) {
-        assertThat(assertContext.getText("Tables size assertion error: "), actual.size(), is(expected.getSimpleTables().size() + expected.getSubqueryTables().size()));
-        assertSimpleTableSegment(assertContext, actual, expected);
-        assertSubqueryTableSegment(assertContext, actual, expected);
+    public static void assertIs(final SQLCaseAssertContext assertContext, final TableSegment actual, final ExpectedTable expected) {
+        if (actual instanceof JoinTableSegment) {
+            assertIs(assertContext, (JoinTableSegment) actual, expected.getJoinTable());
+        } else if (actual instanceof SimpleTableSegment) {
+            assertIs(assertContext, (SimpleTableSegment) actual, expected.getSimpleTable());
+        } else if (actual instanceof SubqueryTableSegment) {
+            assertIs(assertContext, (SubqueryTableSegment) actual, expected.getSubqueryTable());
+        } else {
+            throw new UnsupportedOperationException(
+                    String.format("Unsupported table segment type `%s`.", actual.getClass()));
+        }
     }
-    
+
+    /**
+     * Assert actual table segment is correct with expected table.
+     *
+     * @param assertContext assert context
+     * @param actual actual table
+     * @param expected expected table
+     */
+    public static void assertIs(final SQLCaseAssertContext assertContext, final SimpleTableSegment actual, final ExpectedSimpleTable expected) {
+        IdentifierValueAssert.assertIs(assertContext, actual.getTableName().getIdentifier(), expected, "Table");
+        assertThat(assertContext.getText("Table alias assertion error: "), actual.getAlias().orElse(null), is(expected.getAlias()));
+        if (null != expected.getOwner()) {
+            assertTrue(assertContext.getText("Actual owner should exist."), actual.getOwner().isPresent());
+            OwnerAssert.assertIs(assertContext, actual.getOwner().get(), expected.getOwner());
+        } else {
+            assertFalse(assertContext.getText("Actual owner should not exist."), actual.getOwner().isPresent());
+        }
+        SQLSegmentAssert.assertIs(assertContext, actual, expected);
+    }
+
+    /**
+     * Assert subquery expression.
+     *
+     * @param assertContext assert context
+     * @param actual actual subquery segment
+     * @param expected expected subquery expression
+     */
+    public static void assertIs(final SQLCaseAssertContext assertContext, final SubqueryTableSegment actual, final ExpectedSubqueryTable expected) {
+        SelectStatementAssert.assertIs(assertContext, actual.getSubquery().getSelect(), expected.getSubquery().getSelectTestCases());
+        assertThat(assertContext.getText("Table alias assertion error: "), actual.getAlias().orElse(null), is(expected.getAlias()));
+    }
+
+    /**
+     * Assert join table.
+     *
+     * @param assertContext assert context
+     * @param actual actual JoinTableSegment
+     * @param expected expected ExpectedJoinTable
+     */
+    public static void assertIs(final SQLCaseAssertContext assertContext, final JoinTableSegment actual, final ExpectedJoinTable expected) {
+        assertIs(assertContext, actual.getLeft(), expected.getLeft());
+        assertIs(assertContext, actual.getRight(), expected.getRight());
+        ExpressionAssert.assertExpression(assertContext, actual.getCondition(), expected.getOnCondition());
+        assertThat(assertContext.getText("Column size assertion error: "),
+                actual.getUsing() != null ? actual.getUsing().size() : 0, is(expected.getUsingColumns().size()));
+        int count = 0;
+        for (ExpectedColumn each : expected.getUsingColumns()) {
+            ColumnAssert.assertIs(assertContext, actual.getUsing().get(count), each);
+            count++;
+        }
+    }
+
     /**
      * Assert actual table segments is correct with expected tables.
-     * 
+     *
      * @param assertContext assert context
      * @param actual actual tables
      * @param expected expected tables
@@ -75,76 +136,19 @@ public final class TableAssert {
             count++;
         }
     }
-    
+
     /**
-     * Assert actual table segment is correct with expected table.
+     * Assert actual simple table segments with expected simple tables.
      *
      * @param assertContext assert context
-     * @param actual actual table
-     * @param expected expected table
+     * @param actualTables actual simple tables
+     * @param expectedTables expected simple tables
      */
-    public static void assertIs(final SQLCaseAssertContext assertContext, final SimpleTableSegment actual, final ExpectedSimpleTable expected) {
-        assertThat(assertContext.getText("Table name assertion error: "), actual.getTableName().getIdentifier().getValue(), is(expected.getName()));
-        assertThat(assertContext.getText("Table alias assertion error: "), actual.getAlias().orElse(null), is(expected.getAlias()));
-        if (null != expected.getOwner()) {
-            assertTrue(assertContext.getText("Actual owner should exist."), actual.getOwner().isPresent());
-            // TODO OwnerAssert is necessary.
-            OwnerSegment owner = actual.getOwner().get();
-            SchemaAssert.assertIs(assertContext, new SchemaSegment(owner.getStartIndex(), owner.getStopIndex(), owner.getIdentifier()), expected.getOwner());
-        } else {
-            assertFalse(assertContext.getText("Actual owner should not exist."), actual.getOwner().isPresent());
-        }
-        assertThat(assertContext.getText("Table start delimiter assertion error: "), actual.getTableName().getIdentifier().getQuoteCharacter().getStartDelimiter(), is(expected.getStartDelimiter()));
-        assertThat(assertContext.getText("Table end delimiter assertion error: "), actual.getTableName().getIdentifier().getQuoteCharacter().getEndDelimiter(), is(expected.getEndDelimiter()));
-        SQLSegmentAssert.assertIs(assertContext, actual, expected);
-    }
-    
-    /**
-     * Assert subquery expression.
-     *
-     * @param assertContext assert context
-     * @param actual actual subquery segment
-     * @param expected expected subquery expression
-     */
-    public static void assertIs(final SQLCaseAssertContext assertContext, final SubqueryTableSegment actual, final ExpectedSubqueryTable expected) {
-        SelectStatementAssert.assertIs(assertContext, actual.getSubquery().getSelect(), expected.getSubquery().getSelectTestCases());
-        assertThat(assertContext.getText("Table alias assertion error: "), actual.getAlias().orElse(null), is(expected.getAlias()));
-        // TODO assert start index, stop index and sub select statement.
-        //        SQLSegmentAssert.assertIs(assertContext, actual, expected);
-    }
-    
-    /**
-     * Assert actual table segment is correct with expected table owner.
-     *
-     * @param assertContext assert context
-     * @param actual actual table segment
-     * @param expected expected table owner
-     */
-    public static void assertOwner(final SQLCaseAssertContext assertContext, final SimpleTableSegment actual, final ExpectedSimpleTableOwner expected) {
-        assertThat(assertContext.getText("Owner name assertion error: "), actual.getTableName().getIdentifier().getValue(), is(expected.getName()));
-        assertThat(assertContext.getText("Owner name start delimiter assertion error: "), 
-                actual.getTableName().getIdentifier().getQuoteCharacter().getStartDelimiter(), is(expected.getStartDelimiter()));
-        assertThat(assertContext.getText("Owner name end delimiter assertion error: "), actual.getTableName().getIdentifier().getQuoteCharacter().getEndDelimiter(), is(expected.getEndDelimiter()));
-        SQLSegmentAssert.assertIs(assertContext, actual, expected);
-    }
-    
-    private static void assertSimpleTableSegment(final SQLCaseAssertContext assertContext, final Collection<TableSegment> actual, final ExpectedTables expected) {
-        int count = 0;
-        for (TableSegment each : actual) {
-            if (each instanceof SimpleTableSegment) {
-                assertIs(assertContext, (SimpleTableSegment) each, expected.getSimpleTables().get(count));
-            }
-            count++;
-        }
-    }
-    
-    private static void assertSubqueryTableSegment(final SQLCaseAssertContext assertContext, final Collection<TableSegment> actual, final ExpectedTables expected) {
-        int count = 0;
-        for (TableSegment each : actual) {
-            if (each instanceof SubqueryTableSegment) {
-                assertIs(assertContext, (SubqueryTableSegment) each, expected.getSubqueryTables().get(count));
-            }
-            count++;
+    public static void assertIs(final SQLCaseAssertContext assertContext, final List<SimpleTableSegment> actualTables, final List<ExpectedSimpleTable> expectedTables) {
+        assertThat(assertContext.getText("tables size should be the same."),
+                actualTables.size(), is(expectedTables.size()));
+        for (int i = 0; i < actualTables.size(); i++) {
+            assertIs(assertContext, actualTables.get(i), expectedTables.get(i));
         }
     }
 }

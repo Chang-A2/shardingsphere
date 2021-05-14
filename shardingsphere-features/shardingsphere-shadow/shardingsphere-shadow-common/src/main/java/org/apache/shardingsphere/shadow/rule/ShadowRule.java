@@ -18,7 +18,8 @@
 package org.apache.shardingsphere.shadow.rule;
 
 import lombok.Getter;
-import org.apache.shardingsphere.infra.rule.ShardingSphereRule;
+import org.apache.shardingsphere.infra.rule.level.FeatureRule;
+import org.apache.shardingsphere.infra.rule.scope.SchemaRule;
 import org.apache.shardingsphere.shadow.api.config.ShadowRuleConfiguration;
 
 import java.util.HashMap;
@@ -28,17 +29,17 @@ import java.util.Map;
  * Databases shadow rule.
  */
 @Getter
-public final class ShadowRule implements ShardingSphereRule {
+public final class ShadowRule implements FeatureRule, SchemaRule {
     
     private final Map<String, String> shadowMappings;
     
     private final String column;
     
-    public ShadowRule(final ShadowRuleConfiguration shadowRuleConfiguration) {
-        column = shadowRuleConfiguration.getColumn();
-        shadowMappings = new HashMap<>(shadowRuleConfiguration.getShadowDataSourceNames().size());
-        for (int i = 0; i < shadowRuleConfiguration.getSourceDataSourceNames().size(); i++) {
-            shadowMappings.put(shadowRuleConfiguration.getSourceDataSourceNames().get(i), shadowRuleConfiguration.getShadowDataSourceNames().get(i));
+    public ShadowRule(final ShadowRuleConfiguration shadowRuleConfig) {
+        column = shadowRuleConfig.getColumn();
+        shadowMappings = new HashMap<>(shadowRuleConfig.getShadowDataSourceNames().size());
+        for (int i = 0; i < shadowRuleConfig.getSourceDataSourceNames().size(); i++) {
+            shadowMappings.put(shadowRuleConfig.getSourceDataSourceNames().get(i), shadowRuleConfig.getShadowDataSourceNames().get(i));
         }
     }
 }

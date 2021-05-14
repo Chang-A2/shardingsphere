@@ -187,29 +187,29 @@ public final class ShardingSpringNamespaceTest extends AbstractJUnit4SpringConte
     public void assertSimpleRule() {
         Collection<ShardingTableRuleConfiguration> actualSimpleRuleConfigs = simpleRule.getTables();
         assertThat(actualSimpleRuleConfigs.size(), is(1));
-        ShardingTableRuleConfiguration actualSimpleRuleConfiguration = actualSimpleRuleConfigs.iterator().next();
-        assertThat(actualSimpleRuleConfiguration.getLogicTable(), is("t_order"));
+        ShardingTableRuleConfiguration actualSimpleRuleConfig = actualSimpleRuleConfigs.iterator().next();
+        assertThat(actualSimpleRuleConfig.getLogicTable(), is("t_order"));
     }
     
     @Test
     public void assertComplexRule() {
         Collection<ShardingTableRuleConfiguration> actualComplexRuleConfigs = complexRule.getTables();
         assertThat(actualComplexRuleConfigs.size(), is(1));
-        ShardingTableRuleConfiguration actualComplexRuleConfiguration = actualComplexRuleConfigs.iterator().next();
-        assertThat(actualComplexRuleConfiguration.getLogicTable(), is("t_order"));
-        assertThat(actualComplexRuleConfiguration.getActualDataNodes(), is("ds_$->{0..1}.t_order_$->{0..3}"));
-        assertThat(actualComplexRuleConfiguration.getDatabaseShardingStrategy().getShardingAlgorithmName(), is("dataSourceShardingAlgorithm"));
-        assertThat(actualComplexRuleConfiguration.getTableShardingStrategy().getShardingAlgorithmName(), is("orderTableShardingAlgorithm"));
-        assertThat(actualComplexRuleConfiguration.getKeyGenerateStrategy().getKeyGeneratorName(), is("incrementAlgorithm"));
+        ShardingTableRuleConfiguration actualComplexRuleConfig = actualComplexRuleConfigs.iterator().next();
+        assertThat(actualComplexRuleConfig.getLogicTable(), is("t_order"));
+        assertThat(actualComplexRuleConfig.getActualDataNodes(), is("ds_$->{0..1}.t_order_$->{0..3}"));
+        assertThat(actualComplexRuleConfig.getDatabaseShardingStrategy().getShardingAlgorithmName(), is("dataSourceShardingAlgorithm"));
+        assertThat(actualComplexRuleConfig.getTableShardingStrategy().getShardingAlgorithmName(), is("orderTableShardingAlgorithm"));
+        assertThat(actualComplexRuleConfig.getKeyGenerateStrategy().getKeyGeneratorName(), is("incrementAlgorithm"));
         assertThat(complexRule.getDefaultKeyGenerateStrategy().getKeyGeneratorName(), is("incrementAlgorithm"));
         
     }
     
     @Test
     public void assertBindingRule() {
-        Collection<ShardingTableRuleConfiguration> actualBindingTableRuleConfigus = bindingRule.getTables();
-        assertThat(actualBindingTableRuleConfigus.size(), is(4));
-        Iterator<ShardingTableRuleConfiguration> actualIterator = actualBindingTableRuleConfigus.iterator();
+        Collection<ShardingTableRuleConfiguration> actualBindingTableRuleConfigs = bindingRule.getTables();
+        assertThat(actualBindingTableRuleConfigs.size(), is(4));
+        Iterator<ShardingTableRuleConfiguration> actualIterator = actualBindingTableRuleConfigs.iterator();
         assertThat(actualIterator.next().getLogicTable(), is("t_order"));
         assertThat(actualIterator.next().getLogicTable(), is("t_order_item"));
         assertThat(actualIterator.next().getLogicTable(), is("t_user"));

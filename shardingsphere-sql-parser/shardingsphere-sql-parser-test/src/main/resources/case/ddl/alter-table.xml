@@ -26,6 +26,15 @@
         </add-column>
     </alter-table>
     
+    <alter-table sql-case-id="alter_table_oracle">
+        <table name="t_log" start-index="12" stop-index="16" />
+        <add-column>
+            <column-definition type="varchar" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+    
     <alter-table sql-case-id="alter_table_if_exists_only">
         <table name="t_log" start-index="27" stop-index="31" />
         <add-column>
@@ -239,12 +248,12 @@
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="VARCHAR" start-index="42" stop-index="56">
+            <column-definition type="VARCHAR" start-index="42" stop-index="60">
                 <column name="column5" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="TEXT" start-index="63" stop-index="74">
+            <column-definition type="TEXT" start-index="67" stop-index="78">
                 <column name="column6" />
             </column-definition>
         </add-column>
@@ -257,52 +266,52 @@
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="VARBINARY" start-index="44" stop-index="60">
+            <column-definition type="VARBINARY" start-index="44" stop-index="64">
                 <column name="column5" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="TINYBLOB" start-index="67" stop-index="82">
+            <column-definition type="TINYBLOB" start-index="71" stop-index="86">
                 <column name="column6" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="TINYTEXT" start-index="89" stop-index="104">
+            <column-definition type="TINYTEXT" start-index="93" stop-index="108">
                 <column name="column7" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="BLOB" start-index="111" stop-index="122">
+            <column-definition type="BLOB" start-index="115" stop-index="126">
                 <column name="column8" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="MEDIUMBLOB" start-index="129" stop-index="146">
+            <column-definition type="MEDIUMBLOB" start-index="133" stop-index="150">
                 <column name="column9" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="MEDIUMTEXT" start-index="153" stop-index="171">
+            <column-definition type="MEDIUMTEXT" start-index="157" stop-index="175">
                 <column name="column10" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="LONGBLOB" start-index="178" stop-index="194">
+            <column-definition type="LONGBLOB" start-index="182" stop-index="198">
                 <column name="column11" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="LONGTEXT" start-index="201" stop-index="217">
+            <column-definition type="LONGTEXT" start-index="205" stop-index="221">
                 <column name="column12" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="ENUM" start-index="224" stop-index="236">
+            <column-definition type="ENUM" start-index="228" stop-index="249">
                 <column name="column13" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="SET" start-index="243" stop-index="254">
+            <column-definition type="SET" start-index="256" stop-index="272">
                 <column name="column14" />
             </column-definition>
         </add-column>
@@ -566,6 +575,81 @@
     <alter-table sql-case-id="alter_table_drop_primary_key">
         <table name="t_order" start-index="12" stop-index="18" />
     </alter-table>
+
+    <alter-table sql-case-id="alter_table_not_null">
+        <table name="t1" start-index="12" stop-index="13" />
+        <add-column>
+            <column-definition type="real" start-index="19" stop-index="35">
+                <column name="c2" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_not_null_first">
+        <table name="t1" start-index="12" stop-index="13" />
+        <add-column>
+            <column-definition type="real" start-index="19" stop-index="35">
+                <column name="c2" />
+            </column-definition>
+            <column-position start-index="37" stop-index="41"/>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_not_null_after">
+        <table name="t1" start-index="12" stop-index="13" />
+        <add-column>
+            <column-definition type="real" start-index="19" stop-index="35">
+                <column name="c4" />
+            </column-definition>
+            <column-position start-index="37" stop-index="44">
+                <column name="c2"/>
+            </column-position>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_change_unsigned_not_null">
+        <table name="t1" start-index="12" stop-index="13" />
+        <modify-column>
+            <column-definition type="real" start-index="25" stop-index="49">
+                <column name="c2" />
+            </column-definition>
+        </modify-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_modify_unsigned_not_null">
+        <table name="t1" start-index="12" stop-index="13" />
+        <modify-column>
+            <column-definition type="real" start-index="22" stop-index="37">
+                <column name="c1" />
+            </column-definition>
+        </modify-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_modify_unsigned_zerofill_not_null">
+        <table name="t1" start-index="12" stop-index="13" />
+        <modify-column>
+            <column-definition type="real" start-index="22" stop-index="46">
+                <column name="c1" />
+            </column-definition>
+        </modify-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_change_unsigned_zerofill_not_null">
+        <table name="t1" start-index="12" stop-index="13" />
+        <modify-column>
+            <column-definition type="real" start-index="25" stop-index="58">
+                <column name="c2" />
+            </column-definition>
+        </modify-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_add_partition">
+        <table name="t1" start-index="12" stop-index="13" />
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_partition">
+        <table name="t1" start-index="12" stop-index="13" />
+    </alter-table>
     
     <alter-table sql-case-id="alter_table_drop_foreign_key">
         <table name="t_order" start-index="12" stop-index="18" />
@@ -640,17 +724,17 @@
     <alter-table sql-case-id="alter_table_add_columns_oracle">
         <table name="t_order" start-index="12" stop-index="18" />
         <add-column>
-            <column-definition type="VARCHAR2" start-index="24" stop-index="43">
+            <column-definition type="VARCHAR2" start-index="25" stop-index="44">
                 <column name="column4" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="VARCHAR2" start-index="49" stop-index="68">
+            <column-definition type="VARCHAR2" start-index="47" stop-index="66">
                 <column name="column5" />
             </column-definition>
         </add-column>
         <add-column>
-            <column-definition type="VARCHAR2" start-index="74" stop-index="93">
+            <column-definition type="VARCHAR2" start-index="69" stop-index="88">
                 <column name="column6" />
             </column-definition>
         </add-column>
@@ -826,18 +910,162 @@
     </alter-table>
 
     <alter-table sql-case-id="alter_table_set_schema">
-        <table name="t_order" start-index="12" stop-index="18" />
+        <table name="t_order" start-index="12" stop-index="18"/>
     </alter-table>
 
     <alter-table sql-case-id="alter_table_attach_partition">
-        <table name="t_order" stop-index="18" start-index="12"/>
+        <table name="t_order" start-index="12" stop-index="18"/>
     </alter-table>
 
     <alter-table sql-case-id="alter_table_detach_partition">
-        <table name="t_order" stop-index="18" start-index="12"/>
+        <table name="t_order" start-index="12" stop-index="18"/>
     </alter-table>
 
     <alter-table sql-case-id="alter_table_in_hash_partitioned_table">
-        <table name="t_order" stop-index="18" start-index="12"/>
+        <table name="t_order" start-index="12" stop-index="18"/>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_optimize_memory_read">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="44" stop-index="59">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_no_optimize_memory_write">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="48" stop-index="63">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_enable_validate">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_primary_key">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_index_clause">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_exception_clause">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_cascade">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_keep_index">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_enable_table_lock">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_enable_all_triggers">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_disable_container_map">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_with_disable_containers_default">
+        <table name="t_log" start-index="12" stop-index="16"/>
+        <add-column>
+            <column-definition type="VARCHAR" start-index="23" stop-index="38">
+                <column name="name" />
+            </column-definition>
+        </add-column>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_add_range_partition">
+        <table name="t_order" start-index="12" stop-index="18"/>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_add_list_partition">
+        <table name="t_order" start-index="12" stop-index="18"/>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_drop_partition">
+        <table name="t_order" start-index="12" stop-index="18"/>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_drop_partition_update_global_index">
+        <table name="t_order" start-index="12" stop-index="18"/>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_drop_partition_update_all_index">
+        <table name="t_order" start-index="12" stop-index="18"/>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_drop_partition_update_all_index_partition">
+        <table name="t_order" start-index="12" stop-index="18"/>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_drop_partition_update_all_index_subpartition">
+        <table name="t_order" start-index="12" stop-index="18"/>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_drop_partition_update_global_index_parallel">
+        <table name="t_order" start-index="12" stop-index="18"/>
+    </alter-table>
+
+    <alter-table sql-case-id="alter_table_drop_partition_update_all_index_noparallel">
+        <table name="t_order" start-index="12" stop-index="18"/>
     </alter-table>
 </sql-parser-test-cases>

@@ -19,7 +19,6 @@ package org.apache.shardingsphere.transaction.xa.narayana.manager;
 
 import com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule;
 import com.arjuna.ats.jbossatx.jta.RecoveryManagerService;
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.transaction.xa.narayana.manager.fixture.ReflectiveUtil;
 import org.apache.shardingsphere.transaction.xa.spi.SingleXAResource;
 import org.junit.Before;
@@ -29,6 +28,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.sql.XADataSource;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
@@ -56,20 +57,11 @@ public final class NarayanaXATransactionManagerTest {
     @Mock
     private XADataSource xaDataSource;
     
-    @SneakyThrows
     @Before
     public void setUp() {
         ReflectiveUtil.setProperty(narayanaXATransactionManager, "xaRecoveryModule", xaRecoveryModule);
         ReflectiveUtil.setProperty(narayanaXATransactionManager, "transactionManager", transactionManager);
         ReflectiveUtil.setProperty(narayanaXATransactionManager, "recoveryManagerService", recoveryManagerService);
-    }
-    
-    @SneakyThrows
-    @Test
-    public void assertInit() {
-        narayanaXATransactionManager.init();
-        verify(recoveryManagerService).create();
-        verify(recoveryManagerService).start();
     }
     
     @Test
@@ -84,9 +76,8 @@ public final class NarayanaXATransactionManagerTest {
         verify(xaRecoveryModule).removeXAResourceRecoveryHelper(any(DataSourceXAResourceRecoveryHelper.class));
     }
     
-    @SneakyThrows
     @Test
-    public void assertEnlistResource() {
+    public void assertEnlistResource() throws SystemException, RollbackException {
         SingleXAResource singleXAResource = mock(SingleXAResource.class);
         Transaction transaction = mock(Transaction.class);
         when(transactionManager.getTransaction()).thenReturn(transaction);
@@ -99,9 +90,8 @@ public final class NarayanaXATransactionManagerTest {
         assertThat(narayanaXATransactionManager.getTransactionManager(), is(transactionManager));
     }
     
-    @SneakyThrows
     @Test
-    public void assertClose() {
+    public void assertClose() throws Exception {
         narayanaXATransactionManager.close();
         verify(recoveryManagerService).stop();
         verify(recoveryManagerService).destroy();

@@ -19,8 +19,9 @@ package org.apache.shardingsphere.infra.metadata;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.infra.metadata.datasource.DataSourceMetaDatas;
-import org.apache.shardingsphere.infra.metadata.schema.RuleSchemaMetaData;
+import org.apache.shardingsphere.infra.metadata.resource.ShardingSphereResource;
+import org.apache.shardingsphere.infra.metadata.rule.ShardingSphereRuleMetaData;
+import org.apache.shardingsphere.infra.metadata.schema.ShardingSphereSchema;
 
 /**
  * ShardingSphere meta data.
@@ -29,9 +30,20 @@ import org.apache.shardingsphere.infra.metadata.schema.RuleSchemaMetaData;
 @Getter
 public final class ShardingSphereMetaData {
     
-    private final DataSourceMetaDatas dataSourceMetaDatas;
+    private final String name;
     
-    private final RuleSchemaMetaData ruleSchemaMetaData;
+    private final ShardingSphereResource resource;
     
-    private final String schemaName;
+    private final ShardingSphereRuleMetaData ruleMetaData;
+    
+    private final ShardingSphereSchema schema;
+    
+    /**
+     * Judge whether is completed.
+     *
+     * @return is completed or not
+     */
+    public boolean isComplete() {
+        return !ruleMetaData.getRules().isEmpty() && !resource.getDataSources().isEmpty();
+    }
 }

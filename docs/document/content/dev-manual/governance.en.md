@@ -1,41 +1,32 @@
 +++
-pre = "<b>5.8. </b>"
+pre = "<b>5.9. </b>"
 title = "Distributed Governance"
-weight = 8
+weight = 9
 chapter = true
 +++
 
-## ConfigurationRepository
+## RegistryCenterRepository
 
-| *SPI Name*                       | *Description*           |
-| -------------------------------- | ----------------------- |
-| ConfigurationRepository          | Config repository           |
+| *SPI Name*                       | *Description*                        |
+| -------------------------------- | ------------------------------------ |
+| RegistryCenterRepository         | Registry center repository           |
 
-| *Implementation Class*           | *Description*           |
-| -------------------------------- | ----------------------- |
-| CuratorZookeeperRepository       | ZooKeeper config repository |
-| EtcdRepository                   | etcd config repository      |
-| NacosRepository                  | Nacos config repository     |
-| ApolloRepository                 | Apollo config repository    |
+| *Implementation Class*           | *Description*                        |
+| -------------------------------- | ------------------------------------ |
+| CuratorZookeeperRepository       | ZooKeeper registry center repository |
+| EtcdRepository                   | Etcd registry center repository      |
 
-## RegistryRepository
+## GovernanceListenerFactory
 
-| *SPI Name*                       | *Description*             |
-| -------------------------------- | ------------------------- |
-| RegistryRepository               | Registry repository           |
+| *SPI Name*                       | *Description*                 |
+| -------------------------------- | ----------------------------- |
+| GovernanceListenerFactory        | Governance listener factory   |
 
-| *Implementation Class*           | *Description*             |
-| -------------------------------- | ------------------------- |
-| CuratorZookeeperRepository | ZooKeeper registry repository |
-| EtcdRepository             | etcd registry repository      |
-
-## RootInvokeHook
-
-| *SPI Name*                | *Description*                                  |
-| ------------------------- | ---------------------------------------------- |
-| RootInvokeHook            | Used to trace request root                     |
-
-| *Implementation Class*    | *Description*                                  |
-| ------------------------- | ---------------------------------------------- |
-| OpenTracingRootInvokeHook | Use OpenTracing protocol to trace request root |
-
+| *Implementation Class*                | *Description*                              |
+| ------------------------------------- | ------------------------------------------ |
+| TerminalStateChangedListenerFactory   | Terminal state changed listener factory    |
+| DataSourceStateChangedListenerFactory | Data source state changed listener factory |
+| LockChangedListenerFactory            | Lock changed listener factory              |
+| PropertiesChangedListenerFactory      | Properties changed listener factory        |
+| UserChangedListenerFactory            | User changed listener factory              |
+| PrivilegeNodeChangedListenerFactory   | Privilege changed listener factory         |

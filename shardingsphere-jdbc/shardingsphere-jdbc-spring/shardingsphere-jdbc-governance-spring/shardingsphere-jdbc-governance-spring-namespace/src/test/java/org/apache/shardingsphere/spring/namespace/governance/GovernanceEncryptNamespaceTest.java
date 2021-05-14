@@ -24,7 +24,7 @@ import org.apache.shardingsphere.encrypt.api.config.rule.EncryptTableRuleConfigu
 import org.apache.shardingsphere.encrypt.spi.EncryptAlgorithm;
 import org.apache.shardingsphere.infra.config.properties.ConfigurationProperties;
 import org.apache.shardingsphere.infra.config.properties.ConfigurationPropertyKey;
-import org.apache.shardingsphere.infra.context.schema.SchemaContexts;
+import org.apache.shardingsphere.infra.context.metadata.MetaDataContexts;
 import org.apache.shardingsphere.spring.namespace.governance.util.EmbedTestingServer;
 import org.apache.shardingsphere.spring.namespace.governance.util.FieldValueUtil;
 import org.junit.BeforeClass;
@@ -36,7 +36,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -57,20 +56,20 @@ public final class GovernanceEncryptNamespaceTest extends AbstractJUnit4SpringCo
     
     private AlgorithmProvidedEncryptRuleConfiguration getEncryptRuleConfiguration() {
         GovernanceShardingSphereDataSource governanceDataSource = (GovernanceShardingSphereDataSource) applicationContext.getBean("encryptDataSourceGovernance");
-        SchemaContexts schemaContexts = (SchemaContexts) FieldValueUtil.getFieldValue(governanceDataSource, "schemaContexts");
-        return (AlgorithmProvidedEncryptRuleConfiguration) schemaContexts.getDefaultSchemaContext().getSchema().getConfigurations().iterator().next();
+        MetaDataContexts metaDataContexts = (MetaDataContexts) FieldValueUtil.getFieldValue(governanceDataSource, "metaDataContexts");
+        return (AlgorithmProvidedEncryptRuleConfiguration) metaDataContexts.getDefaultMetaData().getRuleMetaData().getConfigurations().iterator().next();
     }
     
-    private void assertEncryptRule(final AlgorithmProvidedEncryptRuleConfiguration configuration) {
-        assertThat(configuration.getEncryptors().size(), is(2));
-        assertThat(configuration.getTables().size(), is(1));
-        EncryptTableRuleConfiguration encryptTableRuleConfiguration = configuration.getTables().iterator().next();
-        Iterator<EncryptColumnRuleConfiguration> encryptColumnRuleConfigs = encryptTableRuleConfiguration.getColumns().iterator();
-        EncryptColumnRuleConfiguration userIdColumnRuleConfiguration = encryptColumnRuleConfigs.next();
-        EncryptColumnRuleConfiguration orderIdColumnRuleConfiguration = encryptColumnRuleConfigs.next();
-        assertThat(userIdColumnRuleConfiguration.getCipherColumn(), is("user_encrypt"));
-        assertThat(orderIdColumnRuleConfiguration.getPlainColumn(), is("order_decrypt"));
-        Map<String, EncryptAlgorithm> encryptAlgorithms = configuration.getEncryptors();
+    private void assertEncryptRule(final AlgorithmProvidedEncryptRuleConfiguration config) {
+        assertThat(config.getEncryptors().size(), is(2));
+        assertThat(config.getTables().size(), is(1));
+        EncryptTableRuleConfiguration encryptTableRuleConfig = config.getTables().iterator().next();
+        Iterator<EncryptColumnRuleConfiguration> encryptColumnRuleConfigs = encryptTableRuleConfig.getColumns().iterator();
+        EncryptColumnRuleConfiguration userIdColumnRuleConfig = encryptColumnRuleConfigs.next();
+        EncryptColumnRuleConfiguration orderIdColumnRuleConfig = encryptColumnRuleConfigs.next();
+        assertThat(userIdColumnRuleConfig.getCipherColumn(), is("user_encrypt"));
+        assertThat(orderIdColumnRuleConfig.getPlainColumn(), is("order_decrypt"));
+        Map<String, EncryptAlgorithm> encryptAlgorithms = config.getEncryptors();
         assertThat(encryptAlgorithms.size(), is(2));
         assertThat(encryptAlgorithms.get("aes_encryptor").getType(), is("AES"));
         assertThat(encryptAlgorithms.get("aes_encryptor").getProps().getProperty("aes-key-value"), is("123456"));
@@ -80,14 +79,12 @@ public final class GovernanceEncryptNamespaceTest extends AbstractJUnit4SpringCo
     @Test
     public void assertProperties() {
         boolean showSQL = getProperties("encryptDataSourceGovernance").getValue(ConfigurationPropertyKey.SQL_SHOW);
-        boolean queryWithCipherColumn = getProperties("encryptDataSourceGovernance").getValue(ConfigurationPropertyKey.QUERY_WITH_CIPHER_COLUMN);
         assertTrue(showSQL);
-        assertFalse(queryWithCipherColumn);
     }
     
     private ConfigurationProperties getProperties(final String encryptDatasourceName) {
         GovernanceShardingSphereDataSource governanceDataSource = applicationContext.getBean(encryptDatasourceName, GovernanceShardingSphereDataSource.class);
-        SchemaContexts schemaContexts = (SchemaContexts) FieldValueUtil.getFieldValue(governanceDataSource, "schemaContexts");
-        return schemaContexts.getProps();
+        MetaDataContexts metaDataContexts = (MetaDataContexts) FieldValueUtil.getFieldValue(governanceDataSource, "metaDataContexts");
+        return metaDataContexts.getProps();
     }
 }

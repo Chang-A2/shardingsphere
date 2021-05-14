@@ -21,23 +21,28 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.order.OrderBySegment;
 import org.apache.shardingsphere.sql.parser.sql.common.segment.dml.pagination.limit.LimitSegment;
+import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.OutputSegment;
+import org.apache.shardingsphere.sql.parser.sql.common.segment.generic.WithSegment;
 import org.apache.shardingsphere.sql.parser.sql.common.statement.dml.DeleteStatement;
+import org.apache.shardingsphere.sql.parser.sql.dialect.handler.SQLStatementHandler;
 import org.apache.shardingsphere.sql.parser.sql.dialect.statement.mysql.MySQLStatement;
 import org.apache.shardingsphere.sql.parser.sql.dialect.statement.mysql.dml.MySQLDeleteStatement;
+import org.apache.shardingsphere.sql.parser.sql.dialect.statement.sqlserver.SQLServerStatement;
+import org.apache.shardingsphere.sql.parser.sql.dialect.statement.sqlserver.dml.SQLServerDeleteStatement;
 
 import java.util.Optional;
 
 /**
- * DeleteStatement handler for different dialect SQLStatements.
+ * Delete statement handler for different dialect SQL statements.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DeleteStatementHandler {
-
+public final class DeleteStatementHandler implements SQLStatementHandler {
+    
     /**
-     * Get OrderBySegment.
+     * Get order by segment.
      *
-     * @param deleteStatement DeleteStatement
-     * @return OrderBySegment
+     * @param deleteStatement delete statement
+     * @return order by segment
      */
     public static Optional<OrderBySegment> getOrderBySegment(final DeleteStatement deleteStatement) {
         if (deleteStatement instanceof MySQLStatement) {
@@ -45,16 +50,42 @@ public final class DeleteStatementHandler {
         }
         return Optional.empty();
     }
-
+    
     /**
-     * Get LimitSegment.
+     * Get limit segment.
      *
-     * @param deleteStatement DeleteStatement
-     * @return LimitSegment
+     * @param deleteStatement delete statement
+     * @return limit segment
      */
     public static Optional<LimitSegment> getLimitSegment(final DeleteStatement deleteStatement) {
         if (deleteStatement instanceof MySQLStatement) {
             return ((MySQLDeleteStatement) deleteStatement).getLimit();
+        }
+        return Optional.empty();
+    }
+    
+    /**
+     * Get output segment.
+     * 
+     * @param deleteStatement delete statement
+     * @return output segment
+     */
+    public static Optional<OutputSegment> getOutputSegment(final DeleteStatement deleteStatement) {
+        if (deleteStatement instanceof SQLServerStatement) {
+            return ((SQLServerDeleteStatement) deleteStatement).getOutputSegment();
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Get with segment.
+     *
+     * @param deleteStatement delete statement
+     * @return with segment
+     */
+    public static Optional<WithSegment> getWithSegment(final DeleteStatement deleteStatement) {
+        if (deleteStatement instanceof SQLServerStatement) {
+            return ((SQLServerDeleteStatement) deleteStatement).getWithSegment();
         }
         return Optional.empty();
     }
